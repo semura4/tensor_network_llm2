@@ -51,16 +51,18 @@ WikiText-2, vocab=8192, d_model=256, 4 layers, 5 epochs:
 
 | Metric | MPS | Transformer | Hybrid |
 |---|---|---|---|
-| Parameters | 4.24M | 4.24M | 4.24M |
-| **Test Perplexity** | 679.9 | 813.2 | **656.6** |
-| Inference (tok/s) | 779K | **2,281K** | 700K |
-| Inference (ms/batch) | 5.3 | **1.8** | 5.9 |
-| Train throughput (step/s) | 59.3 | **135.0** | 55.6 |
-| Training time (5 epochs) | — | **19s** | 32s |
+| Parameters | 4.25M | 4.24M | 4.25M |
+| **Test Perplexity** | **679.7** | 813.0 | 694.8 |
+| Inference (tok/s) | 553K | **1,648K** | 536K |
+| Inference (ms/batch) | 7.4 | **2.5** | 7.6 |
+| Peak Memory (MB) | **222.1** | 287.0 | 286.9 |
+| Train throughput (step/s) | 43.3 | **96.6** | 40.6 |
+| Training time (5 epochs) | 46s | **18s** | 44s |
 
-- **Hybrid が最良の Perplexity** — Transformer より 19% 低い
+- **MPS が最良の Perplexity** — Transformer より 16% 低い
+- Selective scan, output gating, conv1d, multi-scale init による改良
 - Transformer は推論・訓練速度で優位（attention の GPU 並列性）
-- MPS/Hybrid は並列スキャンにより実用的な速度を達成
+- MPS はメモリ効率が最も高い（222MB vs 287MB）
 
 ## Project Structure
 
