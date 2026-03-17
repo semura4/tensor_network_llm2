@@ -26,18 +26,21 @@ class MPSSequenceLayer(nn.Module):
         d_hidden: int,
         num_heads: int = 4,
         dropout: float = 0.1,
+        d_ff: int = None,
         **kwargs,  # absorb unused params like max_seq_len
     ):
         super().__init__()
+        if d_ff is None:
+            d_ff = d_model * 2
 
         # MPS recurrence sub-layer
         self.mps = MultiHeadMPSRecurrence(d_model, d_hidden, num_heads)
 
         # Feed-forward sub-layer
         self.ffn = nn.Sequential(
-            nn.Linear(d_model, d_model * 2),
+            nn.Linear(d_model, d_ff),
             nn.GELU(),
-            nn.Linear(d_model * 2, d_model),
+            nn.Linear(d_ff, d_model),
             nn.Dropout(dropout),
         )
 

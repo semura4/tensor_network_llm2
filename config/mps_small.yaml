@@ -4,6 +4,7 @@ model:
   d_model: 256
   d_local: 32
   bond_dim: 64
+  d_ff: 256
   num_layers: 4
   max_seq_len: 128
   dropout: 0.1

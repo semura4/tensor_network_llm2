@@ -36,6 +36,7 @@ def build_model(config: dict):
             d_local=mc.get("d_local", 32), bond_dim=mc["bond_dim"],
             num_layers=mc["num_layers"], max_seq_len=mc["max_seq_len"],
             dropout=mc["dropout"], tie_weights=mc["tie_weights"],
+            d_ff=mc.get("d_ff"),
         )
     elif mc["type"] == "transformer":
         return TransformerLanguageModel(

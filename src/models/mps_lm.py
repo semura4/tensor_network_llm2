@@ -27,6 +27,7 @@ class MPSLanguageModel(nn.Module):
         max_seq_len: int = 128,
         dropout: float = 0.1,
         tie_weights: bool = True,
+        d_ff: int = None,
     ):
         super().__init__()
         self.embedding = TokenAndPositionEmbedding(vocab_size, d_model, max_seq_len, dropout)
@@ -36,7 +37,7 @@ class MPSLanguageModel(nn.Module):
         num_heads = 4
 
         self.layers = nn.ModuleList([
-            MPSSequenceLayer(d_model, d_hidden, num_heads, dropout)
+            MPSSequenceLayer(d_model, d_hidden, num_heads, dropout, d_ff=d_ff)
             for _ in range(num_layers)
         ])
 
