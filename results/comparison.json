@@ -1,0 +1,60 @@
+{
+  "mps": {
+    "params": {
+      "total": 4077056,
+      "no_embed": 1947136
+    },
+    "best_valid_ppl": 673.0,
+    "test_ppl": 679.9,
+    "inference": {
+      "tokens_per_second": 20873.54097464872,
+      "ms_per_batch": 196.22928400000092,
+      "total_time": 19.62292840000009
+    },
+    "memory": {
+      "peak_memory_mb": 164.416015625
+    },
+    "train_speed": {
+      "steps_per_second": 1.010724657843009,
+      "ms_per_step": 989.389139999912,
+      "tokens_per_second": 4139.9281985249645
+    },
+    "total_time": 1520.0
+  },
+  "transformer": {
+    "params": {
+      "total": 4238848,
+      "no_embed": 2108928
+    },
+    "best_valid_ppl": 802.1297132654119,
+    "test_ppl": 813.2343187643538,
+    "inference": {
+      "tokens_per_second": 1697090.831652759,
+      "ms_per_batch": 2.413541999994777,
+      "total_time": 0.24135419999947771
+    },
+    "memory": {
+      "peak_memory_mb": 222.2255859375
+    },
+    "train_speed": {
+      "steps_per_second": 110.28744768978238,
+      "ms_per_step": 9.067214999959106,
+      "tokens_per_second": 451737.38573734864
+    },
+    "total_time": 18.692511796951294,
+    "train_losses": [
+      8.035613987568643,
+      7.055762973626606,
+      6.834262098520116,
+      6.745890327697244,
+      6.717477793839467
+    ],
+    "valid_losses": [
+      7.256159432729086,
+      6.890244013124758,
+      6.751156108443801,
+      6.695412832552249,
+      6.687270332027126
+    ]
+  }
+}

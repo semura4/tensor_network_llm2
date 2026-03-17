@@ -1,0 +1,68 @@
+{
+  "MPS": {
+    "params": {
+      "total": 4241920,
+      "no_embed": 2112000
+    },
+    "best_valid_ppl": 673.0,
+    "test_ppl": 679.9,
+    "inference": {
+      "tokens_per_second": 779148.9395736617,
+      "ms_per_batch": 5.257017999974778,
+      "total_time": 0.5257017999974778
+    },
+    "memory": {
+      "peak_memory_mb": 165.3515625
+    },
+    "train_speed": {
+      "steps_per_second": 59.345402407172784,
+      "ms_per_step": 16.850505000184057,
+      "tokens_per_second": 243078.76825977972
+    },
+    "total_time": 1520.0
+  },
+  "Transformer": {
+    "params": {
+      "total": 4238848,
+      "no_embed": 2108928
+    },
+    "best_valid_ppl": 802.1297132654119,
+    "test_ppl": 813.2343187643538,
+    "inference": {
+      "tokens_per_second": 2281477.256514157,
+      "ms_per_batch": 1.79532800000743,
+      "total_time": 0.179532800000743
+    },
+    "memory": {
+      "peak_memory_mb": 302.50537109375
+    },
+    "train_speed": {
+      "steps_per_second": 135.00933926799235,
+      "ms_per_step": 7.406895000167424,
+      "tokens_per_second": 552998.2536416966
+    },
+    "total_time": 18.692511796951294
+  },
+  "Hybrid": {
+    "params": {
+      "total": 4241920,
+      "no_embed": 2112000
+    },
+    "best_valid_ppl": 649.3142682781018,
+    "test_ppl": 656.5575499411863,
+    "inference": {
+      "tokens_per_second": 699957.7222856251,
+      "ms_per_batch": 5.851781999954255,
+      "total_time": 0.5851781999954255
+    },
+    "memory": {
+      "peak_memory_mb": 350.81298828125
+    },
+    "train_speed": {
+      "steps_per_second": 55.63338047329645,
+      "ms_per_step": 17.974820000017644,
+      "tokens_per_second": 227874.32641862225
+    },
+    "total_time": 32.269615650177
+  }
+}
