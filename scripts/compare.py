@@ -14,6 +14,7 @@ from src.data.dataset import get_dataloaders
 from src.models.mps_lm import MPSLanguageModel
 from src.models.transformer_lm import TransformerLanguageModel
 from src.models.hybrid_lm import HybridMPSTransformerLM
+from src.models.mera_lm import MERALanguageModel
 from src.training.trainer import Trainer
 from src.evaluation.metrics import count_parameters, compute_perplexity
 from src.evaluation.benchmark import (
@@ -52,6 +53,14 @@ def build_model(config: dict):
             bond_dim=mc["bond_dim"],
             num_layers=mc["num_layers"], max_seq_len=mc["max_seq_len"],
             dropout=mc["dropout"], tie_weights=mc["tie_weights"],
+        )
+    elif mc["type"] == "mera":
+        return MERALanguageModel(
+            vocab_size=mc["vocab_size"], d_model=mc["d_model"],
+            bond_dim=mc["bond_dim"], num_heads=mc["num_heads"],
+            num_layers=mc["num_layers"], num_scales=mc["num_scales"],
+            max_seq_len=mc["max_seq_len"], dropout=mc["dropout"],
+            tie_weights=mc["tie_weights"], d_ff=mc.get("d_ff"),
         )
     else:
         raise ValueError(f"Unknown model type: {mc['type']}")
@@ -98,6 +107,7 @@ def main():
         ("MPS", load_config(os.path.join(config_dir, "mps_small.yaml"))),
         ("Transformer", load_config(os.path.join(config_dir, "transformer_small.yaml"))),
         ("Hybrid", load_config(os.path.join(config_dir, "hybrid_small.yaml"))),
+        ("MERA", load_config(os.path.join(config_dir, "mera_small.yaml"))),
     ]
 
     # Data (shared across all models)
