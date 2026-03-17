@@ -5,3 +5,4 @@ tokenizers>=0.15
 matplotlib>=3.7
 pyyaml>=6.0
 tqdm
+numpy>=1.24

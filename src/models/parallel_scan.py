@@ -153,3 +153,65 @@ def parallel_scan_simple(a: torch.Tensor, b: torch.Tensor) -> torch.Tensor:
         bb = torch.where(mask, new_bb, bb)
 
     return bb
+
+
+def parallel_scan_chunked(
+    a: torch.Tensor, b: torch.Tensor, chunk_size: int = 128,
+) -> torch.Tensor:
+    """Memory-efficient chunked parallel scan for long sequences.
+
+    Processes the sequence in chunks: parallel scan within each chunk,
+    sequential carry across chunks. Bounds peak memory to O(chunk_size)
+    instead of O(T).
+
+    Args:
+        a: (batch, seq_len, d_hidden)
+        b: (batch, seq_len, d_hidden)
+        chunk_size: size of each chunk (default 128)
+
+    Returns:
+        h: (batch, seq_len, d_hidden)
+    """
+    B, T, D = a.shape
+    orig_dtype = a.dtype
+
+    # Force fp32 for numerical stability in long sequences
+    a = a.float()
+    b = b.float()
+
+    if T <= chunk_size:
+        out = parallel_scan_simple(a, b)
+        return out.to(orig_dtype)
+
+    outputs = []
+    carry_a = a.new_ones(B, 1, D)  # cumulative product of a
+    carry_b = a.new_zeros(B, 1, D)  # cumulative state
+
+    for start in range(0, T, chunk_size):
+        end = min(start + chunk_size, T)
+        a_chunk = a[:, start:end]  # (B, C, D)
+        b_chunk = b[:, start:end]
+
+        if start == 0:
+            # First chunk: just run parallel scan
+            h_chunk = parallel_scan_simple(a_chunk, b_chunk)
+        else:
+            # Incorporate carry: h_t = a_t * carry + b_t for the first position,
+            # then continue the scan.
+            # Prepend carry state and adjust:
+            # h_{start} = a_{start} * carry_b + b_{start}
+            # Modify b_chunk[0] to include carry
+            b_adj = b_chunk.clone()
+            b_adj[:, 0] = a_chunk[:, 0] * carry_b.squeeze(1) + b_chunk[:, 0]
+
+            # For positions > 0 in chunk, the carry is already handled by the
+            # modified first position
+            h_chunk = parallel_scan_simple(a_chunk, b_adj)
+
+        outputs.append(h_chunk)
+
+        # Update carry: carry_new = prod(a in chunk) * carry_old
+        # The last element of h_chunk IS the carry state
+        carry_b = h_chunk[:, -1:].clone()
+
+    return torch.cat(outputs, dim=1).to(orig_dtype)

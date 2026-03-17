@@ -13,7 +13,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from .parallel_scan import parallel_scan_simple
+from .parallel_scan import parallel_scan_simple, parallel_scan_chunked
 
 
 class MultiHeadMPSRecurrence(nn.Module):
@@ -27,7 +27,7 @@ class MultiHeadMPSRecurrence(nn.Module):
     """
 
     def __init__(self, d_model: int, d_hidden: int, num_heads: int = 4,
-                 conv_kernel: int = 4):
+                 conv_kernel: int = 4, scan_chunk_size: int = 0):
         super().__init__()
         self.num_heads = num_heads
         self.head_dim = d_hidden // num_heads
@@ -56,6 +56,7 @@ class MultiHeadMPSRecurrence(nn.Module):
         self.W_out = nn.Linear(d_hidden, d_hidden)
         self.out_proj = nn.Linear(d_hidden, d_model)
 
+        self.scan_chunk_size = scan_chunk_size
         self._init_multi_scale()
 
     def _init_multi_scale(self):
@@ -96,8 +97,11 @@ class MultiHeadMPSRecurrence(nn.Module):
         alpha = (1.0 - gate) * a                            # (B, T, D)
         beta = gate * ih                                     # (B, T, D)
 
-        # Parallel scan
-        outputs = parallel_scan_simple(alpha, beta)          # (B, T, D)
+        # Parallel scan (chunked for long sequences / fp32 for stability)
+        if self.scan_chunk_size > 0:
+            outputs = parallel_scan_chunked(alpha, beta, self.scan_chunk_size)
+        else:
+            outputs = parallel_scan_simple(alpha, beta)      # (B, T, D)
 
         # Gated output
         outputs = z * self.ln(outputs)
